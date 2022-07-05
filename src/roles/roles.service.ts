@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
+import { ColdObservable } from 'rxjs/internal/testing/ColdObservable'
 import { CreateRoleDto } from './dto/create-role.dto'
 import { Role } from './roles.model'
 
@@ -7,10 +8,21 @@ import { Role } from './roles.model'
 export class RolesService {
     constructor(@InjectModel(Role) private roleRepository: typeof Role) {}
     async createRole(dto: CreateRoleDto) {
-        const role = await this.roleRepository.create(dto)
-        return role
+        try {
+            const role: Role = await this.roleRepository.create(dto)
+            return role
+        } catch (error) {
+            console.log(error)
+        }
     }
     async getRoleByValue(value: string) {
-        const role = await this.roleRepository.findOne({ where: { value } })
+        try {
+            const role: Role = await this.roleRepository.findOne({
+                where: { value },
+            })
+            return role
+        } catch (error) {
+            console.log(error)
+        }
     }
 }
