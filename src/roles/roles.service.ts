@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { ColdObservable } from 'rxjs/internal/testing/ColdObservable'
 import { CreateRoleDto } from './dto/create-role.dto'
+import { GiveRoleDto } from '../users/dto/give-role.dto'
 import { Role } from './roles.model'
 
 @Injectable()
@@ -12,7 +13,7 @@ export class RolesService {
             const role: Role = await this.roleRepository.create(dto)
             return role
         } catch (error) {
-            console.log(error)
+            throw error
         }
     }
     async getRoleByValue(value: string) {
@@ -22,7 +23,7 @@ export class RolesService {
             })
             return role
         } catch (error) {
-            console.log(error)
+            throw error
         }
     }
 }

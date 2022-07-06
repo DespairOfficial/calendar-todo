@@ -1,14 +1,10 @@
-import {
-    HttpException,
-    HttpStatus,
-    Injectable,
-    UnauthorizedException,
-} from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { CreateUserDto } from 'src/users/dto/create-user.dto'
 import { UsersService } from 'src/users/users.service'
 import * as bcrypt from 'bcryptjs'
 import { User } from 'src/users/user.model'
+
 @Injectable()
 export class AuthService {
     private generateToken(user: User) {
@@ -21,10 +17,7 @@ export class AuthService {
         try {
             const user = await this.usersService.getUserByEmail(userDto.email)
             if (user) {
-                const passwordPassed = await bcrypt.compare(
-                    userDto.password,
-                    user.password,
-                )
+                const passwordPassed = await bcrypt.compare(userDto.password, user.password)
                 if (passwordPassed) {
                     return user
                 }
@@ -36,19 +29,14 @@ export class AuthService {
             throw error
         }
     }
-    constructor(
-        private usersService: UsersService,
-        private jwtService: JwtService,
-    ) {}
+    constructor(private usersService: UsersService, private jwtService: JwtService) {}
     async login(userDto: CreateUserDto) {
-        const user = await this.validateUser(userDto)
+        const user: User = await this.validateUser(userDto)
         return this.generateToken(user)
     }
     async registration(userDto: CreateUserDto) {
         try {
-            const candidate: User = await this.usersService.getUserByEmail(
-                userDto.email,
-            )
+            const candidate: User = await this.usersService.getUserByEmail(userDto.email)
             if (candidate) {
                 throw new HttpException(
                     'User with this email already exists',

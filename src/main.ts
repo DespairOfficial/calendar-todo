@@ -1,10 +1,13 @@
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { AppModule } from './app.module'
+import { JwtAuthGuard } from './auth/jwt-auth.guard'
+import { ValidationPipe } from './pipes/validation.pipe'
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule)
     app.setGlobalPrefix('api')
+    app.useGlobalPipes(new ValidationPipe())
     const swaggerConfig = new DocumentBuilder()
         .setTitle('Calendar app API')
         .setDescription('Simple calendar API on nestJs with express')
